@@ -1,50 +1,85 @@
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <string.h>
+#include <sys/socket.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <netinet/in.h>
-#include <errno.h>
+#include <arpa/inet.h>
 
-#define SERVER_PORT 4000
-#define BACKLOG 10
 
 int main(int argc, char** argv)
 {
-	int sock_fd, new_fd;
+	int sockfd;
+	char buffer[1024];
+	char *send_buffer = "good \n sajdflkj\n  kasdjlf jlk\n";
+	
+	struct sockaddr_in server_addr;
+	struct hostent *host;
 
-	int sin_size;
+	int portnumber, nbytes;
 
-	struct sockaddr_in my_addr;
-	struct sockaddr_in their_addr;
+	if (3 != argc)
+	{
+		fprintf(stdout, "Usage:%s hostname portnumber \a\n", argv[0]);
+		exit(1);
+	}
 
+
+<<<<<<< HEAD
 	char *msg = "Hello ! Welcom to my computer";
 
 	sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (-1 == sock_fd)
+=======
+	if (0 > (portnumber = atoi(argv[2])))
+>>>>>>> 3881853242211d52ea127575d48a71fbad719e10
 	{
-		fprintf(stdout, "create socket failed\n");
-		return -1;
+		fprintf(stderr, "Usage:%s hostname portnumber \a\n", argv[0]);
+		exit(1);
 	}
 
-	my_addr.sin_family = AF_INET;
-	my_addr.sin_port = htons(SERVER_PORT);
-	my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	bzero(&(my_addr.sin_zero), 8);
-
-	bind(sock_fd, (struct sockaddr*)&my_addr, sizeof(struct sockaddr));
-	listen(sock_fd, BACKLOG);
-
-	sin_size = sizeof(struct sockaddr_in);
-
-	new_fd = accept(sock_fd, (struct sockaddr*)&their_addr, &sin_size);
-
-	if (-1 == new_fd)
+	if (-1 == (sockfd = socket(AF_INET, SOCK_STREAM, 0)))
 	{
-		fprintf(stdout, "create accept failed \n");
-		return -1;
+		fprintf(stderr, "Socket Error \a\n");
+		exit(1);
 	}
 
+	bzero(&server_addr, sizeof(server_addr));
+
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(portnumber);
+	server_addr.sin_addr.s_addr = inet_addr(argv[1]);
+
+	fprintf(stdout, "%s \a\n", argv[1]);
+
+	//if (0 >= inet_pton(AF_INET, argv[1], &server_addr.sin_addr))
+	//{
+	//	fprintf(stdout, "inet_pton error for %s \a\n", argv[1]);
+	//	exit(0);
+	//}
+
+	
+	if (-1 == connect(sockfd, (struct sockaddr*)(&server_addr), sizeof(struct sockaddr)))
+	{
+		fprintf(stderr, "Connect Error \a\n");
+		exit(1);
+	}
+	
+	write(sockfd, send_buffer, strlen(send_buffer));
+
+	if (-1 == (nbytes = read(sockfd, buffer, 1024)))
+	{
+		fprintf(stderr, "Read Error \a\n");
+		exit(1);
+	}
+
+<<<<<<< HEAD
 	send(new_fd, msg, strlen(msg), 0);
+=======
+	buffer[nbytes] = 0;
+	printf("I have received:%s \n", buffer);
+
+	close(sockfd);
+	exit(0);
+>>>>>>> 3881853242211d52ea127575d48a71fbad719e10
 }

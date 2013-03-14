@@ -24,15 +24,7 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 
-
-<<<<<<< HEAD
-	char *msg = "Hello ! Welcom to my computer";
-
-	sock_fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (-1 == sock_fd)
-=======
 	if (0 > (portnumber = atoi(argv[2])))
->>>>>>> 3881853242211d52ea127575d48a71fbad719e10
 	{
 		fprintf(stderr, "Usage:%s hostname portnumber \a\n", argv[0]);
 		exit(1);
@@ -73,13 +65,10 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 
-<<<<<<< HEAD
-	send(new_fd, msg, strlen(msg), 0);
-=======
 	buffer[nbytes] = 0;
 	printf("I have received:%s \n", buffer);
 
+	send(sockfd, "thank you \n", strlen("thank you \n"), 0);
 	close(sockfd);
 	exit(0);
->>>>>>> 3881853242211d52ea127575d48a71fbad719e10
 }

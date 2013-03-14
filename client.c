@@ -19,6 +19,8 @@ int main(int argc, char** argv)
 	struct sockaddr_in my_addr;
 	struct sockaddr_in their_addr;
 
+	char *msg = "Hello ! Welcom to my computer";
+
 	sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (-1 == sock_fd)
 	{
@@ -43,4 +45,6 @@ int main(int argc, char** argv)
 		fprintf(stdout, "create accept failed \n");
 		return -1;
 	}
+
+	send(new_fd, msg, strlen(msg), 0);
 }
